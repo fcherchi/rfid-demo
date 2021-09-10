@@ -1,0 +1,161 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Demo FCI</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"
+          type="text/css" />
+</head>
+<body>
+<div class="container">
+    <h2>Demo</h2>
+    <h3>Readers</h3>
+    <div th:fragment="readersList">
+        <table class = "table" data-table="readerstable">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Enabled</th>
+                <th>Pull Cable</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <h3>Heartbeats</h3>
+    <div th:fragment="heartbeatsList">
+        <table class = "table" data-table="heartbeatstable">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Is Alive</th>
+                <th>Last Time Seen</th>
+                <th>Temp. C°</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div id="echo-log" class="panel panel-primary">
+        <div class="panel-heading">Readings</div>
+        <div class="panel-body" style="max-height: 200;overflow-y: scroll; min-height: 200;">
+            <div id="output"/>
+        </div>
+    </div>
+
+    <!--<h3>Readings</h3>-->
+    <!--<div id="echo-log" style="float: left; margin-left: 20px; padding-left: 20px; height: 200px;-->
+        <!--overflow: auto; border-left: solid 1px; border-right: solid 1px;>-->
+        <!--<div id="output"></div>-->
+    <!--</div>-->
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{./js/sockjs.min.js}"></script>
+<script th:src="@{./js/stomp.js}"></script>
+<script th:src="@{./js/home.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+
+    //<![CDATA[
+    var $readers_table = $('table[data-table="readerstable"]');
+    var $heartbeats_table = $('table[data-table="heartbeatstable"]');
+
+    var readers_url = [[@{/readers}]];
+    var heartbeats_url = [[@{/heartbeats}]];
+
+    $(document).ready(function() {
+        pollChanges();
+        stompClient.connect(document.getElementById("output"));
+    });
+
+    function pollChanges() {
+
+        pollReadersChanges($readers_table, readers_url);
+        pollHeartbeats($heartbeats_table, heartbeats_url);
+        setTimeout(pollChanges, 5000);
+    }
+
+
+    function pollReadersChanges(table, readers_url) {
+
+        if(table.length == 0){
+            return;
+        }
+
+        var $tbody = table.children('tbody');
+        if($tbody.length == 0){
+            $tbody = $('<tbody></tbody>');
+            table.append($tbody);
+        }
+
+
+        $.ajax({
+            type : 'GET',
+            url : readers_url,
+            contentType : "application/json"
+        }).always(function() {
+
+        }).done(function(result) {
+
+            $tbody.empty();
+            // fill the table
+            $.each(result, function(i, o) {
+
+                $tbody.append(
+                        createTrReader(i,o)
+                );
+            });
+            setClickButton();
+
+        });
+    }
+
+
+
+    function pollHeartbeats(table, heartbeats_url) {
+
+        if(table.length == 0){
+            return;
+        }
+
+        var $tbody = table.children('tbody');
+        if($tbody.length == 0){
+            $tbody = $('<tbody></tbody>');
+            table.append($tbody);
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : heartbeats_url,
+            contentType : "application/json"
+        }).always(function(result) {
+            $tbody.empty();
+            // fill the table
+            $.each(result, function(i, o) {
+                $tbody.append(
+                        createTrHeartbeat(i,o)
+                );
+            });
+
+        });
+    }
+
+    function setClickButton() {
+
+        var $button = $readers_table.find('tr td .btn');
+        $button.on('click', function (e) {
+            var reader_id = $(this).attr('data-value');
+            cableOff([[@{/cableOff}]] + '/' + reader_id);
+        });
+    }
+
+    //]]>
+</script>
+</body>
+
+</html>

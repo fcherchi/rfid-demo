@@ -1,0 +1,36 @@
+{
+	"readers":[
+	 {
+      "id": "Filling 1",
+      "ip": "192.168.255.26",
+      "port":4007,
+      "power":"0x84",
+      "antennaGain":16,
+      "rssiThreshold":50,
+      "isEnabled":false,
+      "communicationProfile":11,
+      "useGPIOTrigger":true
+	 },
+	 {
+      "id": "Filling 2",
+      "ip": "192.168.255.31",
+      "port":4007,
+      "power":"0x44",
+      "antennaGain":16,
+      "rssiThreshold":50,
+      "isEnabled":false,
+      "communicationProfile":11,
+      "useGPIOTrigger":true
+	 },
+	 {
+      "id": "Filling 3",
+      "ip": "192.168.255.33",
+      "port":4007,
+      "power":"0x84",
+      "antennaGain":16,
+      "rssiThreshold":50,
+      "isEnabled":true,
+      "communicationProfile":11,
+      "useGPIOTrigger":true
+	 }]
+}

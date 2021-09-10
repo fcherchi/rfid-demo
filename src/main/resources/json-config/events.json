@@ -1,0 +1,22 @@
+{
+	"events" : [
+		{
+			"readerId" : "Filling 1",
+			"computationTimeMs" : 10000,
+			"countThreshold": 50,
+			"isFillingStation" : true
+		},
+		{
+			"readerId" : "Output",
+			"computationTimeMs" : 100,
+			"countThreshold": 5,
+			"isFillingStation" : false
+		},
+		{
+			"readerId" : "Filling 3",
+			"computationTimeMs" : 10000,
+			"countThreshold": 50,
+			"isFillingStation" : true
+		}
+	]
+}
